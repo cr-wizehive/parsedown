@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Markdown</title>
+<style>
+<style>
+  body {
+    background-color: white;
+  }
+  h1,h2,h3,h4,h5,h6 {
+    color: firebrick;
+  }
+  p {
+    color: black;
+  }
+  pre {
+    background-color: whitesmoke;
+    font-family: "Courier New", Courier, monospace, sans-serif;
+  }
+  table {
+  width: 100%;
+  background-color: ivory;
+  }
+  thead {
+  background-color: lemonchiffon;
+  }
+</style>
+
+</style>
+</head>
+<body>
+<?php
+
+$markdown = "
+
+# Headers
+
+# H1
+## H2
+### H3
+#### H4
+##### H5
+###### H6
+
+---
+
+# Styles
+
+This should be _italic_
+This should be **bold**
+This should be **_bold italic_**
+This should be ~~strike-thought~~
+
+---
+
+# Line breaks
+
+
+
+
+
+
+---
+
+# Tables
+
+| What | Is |
+|: --- |: --- |
+| Markdown | Good |
+| Taxes | Bad |
+
+---
+
+# Fenced Code Blocks
+
+```
+\$this->isCode();
+```
+
+---
+
+# Auto Links
+
+www.example.com
+
+---
+
+# Done
+
+";
+
+// Anglerfish Showdown settings:
+//
+//    // GFM (Github Flavored Markdown)
+//    // $showdownProvider.setOption('omitExtraWLInCodeBlocks', true);
+//    $showdownProvider.setOption('simplifiedAutoLink', true);
+//    $showdownProvider.setOption('excludeTrailingPunctuationFromURLs', true);
+//    // $showdownProvider.setOption('literalMidWordUnderscores', true);
+//    ->setStrikethroughEnabled(true)
+//    ->setTablesEnabled(true)
+//    // $showdownProvider.setOption('tablesHeaderId', true);
+//    ->setGhCodeBlocksEnabled(true)
+//    // $showdownProvider.setOption('tasklists', true);
+//    // $showdownProvider.setOption('disableForced4SpacesIndentedSublists', true);
+//    ->setSimpleLineBreaksEnabled(true)
+//    // $showdownProvider.setOption('requireSpaceBeforeHeadingText', true);
+//    // $showdownProvider.setOption('ghCompatibleHeaderId', true);
+//    // $showdownProvider.setOption('ghMentions', true);
+//    // $showdownProvider.setOption('backslashEscapesHTMLTags', true);
+//
+//    // Extra
+//    $showdownProvider.setOption('parseImgDimensions', true);
+//    $showdownProvider.setOption('openLinksInNewWindow', true);
+//
+
+
+$parsedown = (new Parsedown())
+    ->setSimpleLineBreaksEnabled(true)
+    ->setStrikethroughEnabled(true)
+    ->setTablesEnabled(true)
+    ->setGhCodeBlocksEnabled(true)
+    ->setSimplifiedAutoLinkEnabled(false);
+
+echo $parsedown->text($markdown);
+
+?>
+
+</body>
+</html>

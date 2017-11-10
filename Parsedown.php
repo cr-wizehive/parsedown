@@ -48,6 +48,49 @@ class Parsedown
     # Setters
     #
 
+    function setSimplifiedAutoLinkEnabled($simplifiedAutoLink)
+    {
+        $this->simplifiedAutoLink = $simplifiedAutoLink;
+
+        return $this;
+    }
+
+    protected $simplifiedAutoLink;
+
+    function setStrikethroughEnabled($strikethroughEnabled)
+    {
+        $this->strikethroughEnabled = $strikethroughEnabled;
+
+        return $this;
+    }
+
+    protected $strikethroughEnabled;
+
+    function setTablesEnabled($tablesEnabled)
+    {
+        $this->tablesEnabled = $tablesEnabled;
+
+        return $this;
+    }
+
+    protected $tablesEnabled;
+
+    function setGhCodeBlocksEnabled($ghCodeBlocksEnabled)
+    {
+        $this->ghCodeBlocksEnabled = $ghCodeBlocksEnabled;
+
+        return $this;
+    }
+
+    protected $ghCodeBlocksEnabled;
+
+    function setSimpleLineBreaksEnabled($breaksEnabled)
+    {
+        $this->breaksEnabled = $breaksEnabled;
+
+        return $this;
+    }
+
     function setBreaksEnabled($breaksEnabled)
     {
         $this->breaksEnabled = $breaksEnabled;
@@ -396,6 +439,11 @@ class Parsedown
 
     protected function blockFencedCode($Line)
     {
+        if ( ! $this->ghCodeBlocksEnabled)
+        {
+          return;
+        }
+
         if (preg_match('/^['.$Line['text'][0].']{3,}[ ]*([\w-]+)?[ ]*$/', $Line['text'], $matches))
         {
             $Element = array(
@@ -515,10 +563,10 @@ class Parsedown
                 ),
             );
 
-            if($name === 'ol') 
+            if($name === 'ol')
             {
                 $listStart = stristr($matches[0], '.', true);
-                
+
                 if($listStart !== '1')
                 {
                     $Block['element']['attributes'] = array('start' => $listStart);
@@ -798,6 +846,11 @@ class Parsedown
 
     protected function blockTable($Line, array $Block = null)
     {
+        if ( ! $this->tablesEnabled)
+        {
+          return;
+        }
+
         if ( ! isset($Block) or isset($Block['type']) or isset($Block['interrupted']))
         {
             return;
@@ -1013,7 +1066,12 @@ class Parsedown
 
             foreach ($this->InlineTypes[$marker] as $inlineType)
             {
-                $Inline = $this->{'inline'.$inlineType}($Excerpt);
+               if ($marker == '~' && ! $this->strikethroughEnabled)
+               {
+                 continue;
+               }
+
+               $Inline = $this->{'inline'.$inlineType}($Excerpt);
 
                 if ( ! isset($Inline))
                 {
