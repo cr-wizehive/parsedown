@@ -55,7 +55,7 @@ class Parsedown
         return $this;
     }
 
-    protected $simplifiedAutoLink;
+    protected $simplifiedAutoLink = true;
 
     function setStrikethroughEnabled($strikethroughEnabled)
     {
@@ -64,7 +64,7 @@ class Parsedown
         return $this;
     }
 
-    protected $strikethroughEnabled;
+    protected $strikethroughEnabled = true;
 
     function setTablesEnabled($tablesEnabled)
     {
@@ -73,7 +73,7 @@ class Parsedown
         return $this;
     }
 
-    protected $tablesEnabled;
+    protected $tablesEnabled = true;
 
     function setGhCodeBlocksEnabled($ghCodeBlocksEnabled)
     {
@@ -82,7 +82,7 @@ class Parsedown
         return $this;
     }
 
-    protected $ghCodeBlocksEnabled;
+    protected $ghCodeBlocksEnabled = true;
 
     function setSimpleLineBreaksEnabled($breaksEnabled)
     {
