@@ -1032,6 +1032,7 @@ class Parsedown
         '!' => array('Image'),
         '&' => array('SpecialCharacter'),
         '*' => array('Emphasis'),
+        '.' => array('Url'),
         ':' => array('Url'),
         '<' => array('UrlTag', 'EmailTag', 'Markup', 'SpecialCharacter'),
         '>' => array('SpecialCharacter'),
@@ -1044,7 +1045,7 @@ class Parsedown
 
     # ~
 
-    protected $inlineMarkerList = '!"*_&[:<>`~\\';
+    protected $inlineMarkerList = '!"*_&[:.<>`~\\';
 
     #
     # ~
@@ -1392,14 +1393,21 @@ class Parsedown
         }
     }
 
+	protected function textToUrl($Text) {
+		if (!parse_url($Text, PHP_URL_SCHEME)) {
+			$Text = 'http://' . $Text;
+		}
+		return $Text;
+	}
+
     protected function inlineUrl($Excerpt)
     {
-        if ($this->urlsLinked !== true or ! isset($Excerpt['text'][2]) or $Excerpt['text'][2] !== '/')
+		if ($this->urlsLinked !== true or (! isset($Excerpt['text'][2]) or $Excerpt['text'][2] !== '/' and ! $this->simplifiedAutoLink))
         {
             return;
         }
 
-        if (preg_match('/\bhttps?:[\/]{2}[^\s<]+\b\/*/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE))
+        if (preg_match('/\b(?:www\.|https?:[\/]{2})[^\s<]+\b\/*/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE))
         {
             $Inline = array(
                 'extent' => strlen($matches[0][0]),
@@ -1408,7 +1416,7 @@ class Parsedown
                     'name' => 'a',
                     'text' => $matches[0][0],
                     'attributes' => array(
-                        'href' => $matches[0][0],
+                        'href' => $this->textToUrl($matches[0][0]),
                     ),
                 ),
             );
