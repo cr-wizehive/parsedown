@@ -48,6 +48,24 @@ class Parsedown
     # Setters
     #
 
+	/** Make all links and images absolute */
+	function setMakeAllLinksAbsolute($makeAllLinksAbsolute) {
+		$this->makeAllLinksAbsolute = $makeAllLinksAbsolute;
+		return true;
+	}
+
+	protected $makeAllLinksAbsolute;
+
+
+    /** Make sure all links are https */
+    function setMakeLinksSecure($makeLinksSecure) {
+        $this->makeLinksSecure = $makeLinksSecure;
+
+        return $this;
+    }
+
+    protected $makeLinksSecure;
+
     function setOpenLinksInNewWindow($openLinkInNewWindow) {
         $this->openLinkInNewWindow = $openLinkInNewWindow;
         return $this;
@@ -1242,7 +1260,7 @@ class Parsedown
             'element' => array(
                 'name' => 'img',
                 'attributes' => array(
-                    'src' => $Link['element']['attributes']['href'],
+                    'src' => $this->textToUrl($Link['element']['attributes']['href'], false),
                     'alt' => $Link['element']['text'],
                 ),
             ),
@@ -1401,10 +1419,16 @@ class Parsedown
         }
     }
 
-    protected function textToUrl($Text) {
-        if (!parse_url($Text, PHP_URL_SCHEME)) {
+    protected function textToUrl($Text, $makeAbsolute = true) {
+		$makeAbsolute = $makeAbsolute || $this->makeAllLinksAbsolute;
+        if ($makeAbsolute && !parse_url($Text, PHP_URL_SCHEME)) {
             $Text = 'http://' . $Text;
         }
+
+        if ($this->makeLinksSecure) {
+            $Text = preg_replace("/^http:/i", "https:", $Text);
+        }
+
         return $Text;
     }
 
