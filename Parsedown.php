@@ -48,6 +48,14 @@ class Parsedown
     # Setters
     #
 
+    function setOpenLinksInNewWindow($openLinkInNewWindow) {
+        $this->openLinkInNewWindow = $openLinkInNewWindow;
+        return $this;
+    }
+
+    protected $openLinkInNewWindow = false;
+
+
     function setSimplifiedAutoLinkEnabled($simplifiedAutoLink)
     {
         $this->simplifiedAutoLink = $simplifiedAutoLink;
@@ -1393,16 +1401,16 @@ class Parsedown
         }
     }
 
-	protected function textToUrl($Text) {
-		if (!parse_url($Text, PHP_URL_SCHEME)) {
-			$Text = 'http://' . $Text;
-		}
-		return $Text;
-	}
+    protected function textToUrl($Text) {
+        if (!parse_url($Text, PHP_URL_SCHEME)) {
+            $Text = 'http://' . $Text;
+        }
+        return $Text;
+    }
 
     protected function inlineUrl($Excerpt)
     {
-		if ($this->urlsLinked !== true or (! isset($Excerpt['text'][2]) or $Excerpt['text'][2] !== '/' and ! $this->simplifiedAutoLink))
+        if ($this->urlsLinked !== true or (! isset($Excerpt['text'][2]) or $Excerpt['text'][2] !== '/' and ! $this->simplifiedAutoLink))
         {
             return;
         }
@@ -1420,6 +1428,10 @@ class Parsedown
                     ),
                 ),
             );
+
+            if ($this->openLinkInNewWindow) {
+                $Inline['element']['attributes']['target'] = '_blank';
+            }
 
             return $Inline;
         }
