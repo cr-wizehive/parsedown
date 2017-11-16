@@ -51,7 +51,8 @@ class Parsedown
 	/** Make all links and images absolute */
 	function setMakeAllLinksAbsolute($makeAllLinksAbsolute) {
 		$this->makeAllLinksAbsolute = $makeAllLinksAbsolute;
-		return true;
+
+		return $this;
 	}
 
 	protected $makeAllLinksAbsolute;
