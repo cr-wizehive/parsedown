@@ -48,14 +48,14 @@ class Parsedown
     # Setters
     #
 
-	/** Make all links and images absolute */
-	function setMakeAllLinksAbsolute($makeAllLinksAbsolute) {
-		$this->makeAllLinksAbsolute = $makeAllLinksAbsolute;
+    /** Make all links and images absolute */
+    function setMakeAllLinksAbsolute($makeAllLinksAbsolute) {
+        $this->makeAllLinksAbsolute = $makeAllLinksAbsolute;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	protected $makeAllLinksAbsolute;
+    protected $makeAllLinksAbsolute;
 
 
     /** Make sure all links are https */
@@ -1286,6 +1286,10 @@ class Parsedown
             ),
         );
 
+        if ($this->openLinkInNewWindow) {
+            $Element['attributes']['target'] = '_blank';
+        }
+
         $extent = 0;
 
         $remainder = $Excerpt['text'];
@@ -1339,7 +1343,7 @@ class Parsedown
             $Element['attributes']['title'] = $Definition['title'];
         }
 
-        $Element['attributes']['href'] = str_replace(array('&', '<'), array('&amp;', '&lt;'), $Element['attributes']['href']);
+        $Element['attributes']['href'] = $this->textToUrl(str_replace(array('&', '<'), array('&amp;', '&lt;'), $Element['attributes']['href']), false);
 
         return array(
             'extent' => $extent,
@@ -1421,7 +1425,7 @@ class Parsedown
     }
 
     protected function textToUrl($Text, $makeAbsolute = true) {
-		$makeAbsolute = $makeAbsolute || $this->makeAllLinksAbsolute;
+        $makeAbsolute = $makeAbsolute || $this->makeAllLinksAbsolute;
         if ($makeAbsolute && !parse_url($Text, PHP_URL_SCHEME)) {
             $Text = 'http://' . $Text;
         }
@@ -1468,7 +1472,7 @@ class Parsedown
         {
             $url = str_replace(array('&', '<'), array('&amp;', '&lt;'), $matches[1]);
 
-            return array(
+            $Link = array(
                 'extent' => strlen($matches[0]),
                 'element' => array(
                     'name' => 'a',
@@ -1478,6 +1482,12 @@ class Parsedown
                     ),
                 ),
             );
+
+            if ($this->openLinkInNewWindow) {
+                $Link['element']['attributes']['target'] = '_blank';
+            }
+
+            return $Link;
         }
     }
 
